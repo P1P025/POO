@@ -3,6 +3,7 @@ import java.util.List;
 
 public class Pedido {
     private int idPedido;
+    
     private String estado;
     private List<Producto> productos;
     private Usuario cliente;

@@ -1,7 +1,6 @@
 package com.example.Rappi_U.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,13 +22,7 @@ public class ProductoController {
 
     // Endpoint para crear un producto
     @PostMapping
-    public Producto createProducto(@RequestBody Map<String, Object> productoData) {
-        int idProducto = (int) productoData.get("idProducto");
-        String nombre = (String) productoData.get("nombre");
-        double precio = (double) productoData.get("precio");
-        String descripcion = (String) productoData.get("descripcion");
-
-        Producto producto = new Producto(idProducto, nombre, precio, descripcion);
+    public Producto createProducto(@RequestBody Producto producto) {
         return productoService.createProducto(producto);
     }
 

@@ -2,10 +2,10 @@ package com.example.Rappi_U.models;
 public class Producto {
     private int idProducto;
     private String nombre;
-    private double precio;
+    private int  precio;
     private String descripcion;
 
-    public Producto(int idProducto, String nombre, double precio, String descripcion) {
+    public Producto(int idProducto, String nombre, int precio, String descripcion) {
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.precio = precio;
@@ -20,7 +20,7 @@ public class Producto {
         return nombre;
     }
 
-    public double getPrecio() {
+    public int getPrecio() {
         return precio;
     }
 
