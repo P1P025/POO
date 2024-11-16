@@ -21,40 +21,73 @@ public class AdministradorController {
     @Autowired
     private AdministradorService administradorService;
 
-
     @PostMapping
     public Administrador createAdministrador(@RequestBody Map<String, String> adminData) {
-        String nombre = adminData.get("nombre");
-        String email = adminData.get("email");
-        String password = adminData.get("password");
+        try {
+            String nombre = adminData.get("nombre");
+            String email = adminData.get("email");
+            String password = adminData.get("password");
 
-        Administrador administrador = new Administrador(nombre, email, password);
-        return administradorService.createAdministrador(administrador);
+            if (nombre == null || email == null || password == null) {
+                throw new IllegalArgumentException("Datos incompletos para crear administrador.");
+            }
+
+            Administrador administrador = new Administrador(nombre, email, password);
+            return administradorService.createAdministrador(administrador);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error en la creación del administrador: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al crear administrador: " + e.getMessage());
+        }
     }
 
     @PostMapping("/gestionarPedido")
     public String gestionarPedido(@RequestBody Pedido pedido) {
-        administradorService.gestionarPedido(pedido);
-        return "Pedido #" + pedido.getIdPedido() + " gestionado correctamente.";
+        try {
+            if (pedido == null) {
+                throw new IllegalArgumentException("Datos del pedido son nulos.");
+            }
+            administradorService.gestionarPedido(pedido);
+            return "Pedido #" + pedido.getIdPedido() + " gestionado correctamente.";
+        } catch (IllegalArgumentException e) {
+            return "Error al gestionar el pedido: " + e.getMessage();
+        } catch (Exception e) {
+            return "Error inesperado al gestionar el pedido: " + e.getMessage();
+        }
     }
 
     @PostMapping("/actualizarEstadoPedido")
     public String actualizarEstadoPedido(@RequestBody Map<String, Object> data) {
-        int idPedido = (int) data.get("idPedido");
-        String estado = (String) data.get("estado");
+        try {
+            int idPedido = (int) data.get("idPedido");
+            String estado = (String) data.get("estado");
 
-        Pedido pedido = administradorService.findPedidoById(idPedido);
-        if (pedido != null) {
-            administradorService.actualizarEstadoPedido(pedido, estado);
-            return "Estado del pedido #" + idPedido + " actualizado a: " + estado;
-        } else {
-            throw new IllegalArgumentException("Pedido no encontrado con ID: " + idPedido);
+            Pedido pedido = administradorService.findPedidoById(idPedido);
+            if (pedido != null) {
+                administradorService.actualizarEstadoPedido(pedido, estado);
+                return "Estado del pedido #" + idPedido + " actualizado a: " + estado;
+            } else {
+                throw new IllegalArgumentException("Pedido no encontrado con ID: " + idPedido);
+            }
+        } catch (IllegalArgumentException e) {
+            return "Error al actualizar estado del pedido: " + e.getMessage();
+        } catch (Exception e) {
+            return "Error inesperado al actualizar estado del pedido: " + e.getMessage();
         }
     }
 
     @GetMapping("/pedido/{id}")
     public Pedido getPedido(@PathVariable int id) {
-        return administradorService.findPedidoById(id);
+        try {
+            Pedido pedido = administradorService.findPedidoById(id);
+            if (pedido == null) {
+                throw new IllegalArgumentException("Pedido no encontrado con ID: " + id);
+            }
+            return pedido;
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error al buscar el pedido: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al buscar el pedido: " + e.getMessage());
+        }
     }
-
 }

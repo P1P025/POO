@@ -23,34 +23,74 @@ public class ProductoController {
     // Endpoint para crear un producto
     @PostMapping
     public Producto createProducto(@RequestBody Producto producto) {
-        return productoService.createProducto(producto);
+        try {
+            if (producto == null || producto.getNombre() == null || producto.getPrecio() <= 0) {
+                throw new IllegalArgumentException("Datos del producto incompletos o inválidos.");
+            }
+            return productoService.createProducto(producto);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error al crear el producto: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al crear el producto: " + e.getMessage());
+        }
     }
 
     // Endpoint para obtener un producto por ID
     @GetMapping("/{id}")
     public Producto getProducto(@PathVariable int id) {
-        return productoService.findProductoById(id);
+        try {
+            Producto producto = productoService.findProductoById(id);
+            if (producto == null) {
+                throw new IllegalArgumentException("Producto no encontrado con ID: " + id);
+            }
+            return producto;
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error al obtener el producto: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al obtener el producto: " + e.getMessage());
+        }
     }
 
     // Endpoint para listar todos los productos
     @GetMapping
     public List<Producto> getAllProductos() {
-        return productoService.getAllProductos();
+        try {
+            return productoService.getAllProductos();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al listar los productos: " + e.getMessage());
+        }
     }
 
     // Endpoint para ver los detalles de un producto
     @GetMapping("/{id}/detalles")
     public String verDetalles(@PathVariable int id) {
-        Producto producto = productoService.findProductoById(id);
-        return producto.getNombre() + ": $" + producto.getPrecio() + " - " + producto.getDescripcion();
+        try {
+            Producto producto = productoService.findProductoById(id);
+            if (producto == null) {
+                throw new IllegalArgumentException("Producto no encontrado con ID: " + id);
+            }
+            return producto.getNombre() + ": $" + producto.getPrecio() + " - " + producto.getDescripcion();
+        } catch (IllegalArgumentException e) {
+            return "Error al obtener detalles del producto: " + e.getMessage();
+        } catch (Exception e) {
+            return "Error inesperado al obtener detalles del producto: " + e.getMessage();
+        }
     }
 
     // Endpoint para agregar el producto al pedido
     @PostMapping("/{id}/agregarAlPedido")
     public String agregarAlPedido(@PathVariable int id) {
-        Producto producto = productoService.findProductoById(id);
-        producto.agregarAlPedido();
-        return "Producto " + producto.getNombre() + " agregado al pedido.";
+        try {
+            Producto producto = productoService.findProductoById(id);
+            if (producto == null) {
+                throw new IllegalArgumentException("Producto no encontrado con ID: " + id);
+            }
+            producto.agregarAlPedido();
+            return "Producto " + producto.getNombre() + " agregado al pedido.";
+        } catch (IllegalArgumentException e) {
+            return "Error al agregar el producto al pedido: " + e.getMessage();
+        } catch (Exception e) {
+            return "Error inesperado al agregar el producto al pedido: " + e.getMessage();
+        }
     }
 }
-

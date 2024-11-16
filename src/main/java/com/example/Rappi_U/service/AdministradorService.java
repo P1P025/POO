@@ -14,36 +14,72 @@ public class AdministradorService {
     private Map<Integer, Pedido> pedidos = new HashMap<>();
 
     public Administrador createAdministrador(Administrador administrador) {
-        return administrador;
+        try {
+            if (administrador == null) {
+                throw new IllegalArgumentException("El administrador no puede ser nulo.");
+            }
+            return administrador;
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error al crear el administrador: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al crear el administrador: " + e.getMessage());
+        }
     }
 
     public void gestionarPedido(Pedido pedido) {
-        if (pedido != null) {
+        try {
+            if (pedido == null) {
+                throw new IllegalArgumentException("El pedido no puede ser nulo.");
+            }
             System.out.println("Gestionando pedido #" + pedido.getIdPedido());
-        } else {
-            throw new IllegalArgumentException("El pedido es nulo.");
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error al gestionar el pedido: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al gestionar el pedido: " + e.getMessage());
         }
     }
 
     public void actualizarEstadoPedido(Pedido pedido, String estado) {
-        if (pedido != null) {
+        try {
+            if (pedido == null) {
+                throw new IllegalArgumentException("El pedido no puede ser nulo.");
+            }
+            if (estado == null || estado.isEmpty()) {
+                throw new IllegalArgumentException("El estado no puede ser nulo o vacío.");
+            }
             pedido.setEstado(estado);
             System.out.println("Estado del pedido #" + pedido.getIdPedido() + " actualizado a: " + estado);
-        } else {
-            throw new IllegalArgumentException("El pedido es nulo.");
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error al actualizar el estado del pedido: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al actualizar el estado del pedido: " + e.getMessage());
         }
     }
 
     public Pedido findPedidoById(int idPedido) {
-        Pedido pedido = pedidos.get(idPedido);
-        if (pedido != null) {
+        try {
+            Pedido pedido = pedidos.get(idPedido);
+            if (pedido == null) {
+                throw new IllegalArgumentException("Pedido no encontrado con ID: " + idPedido);
+            }
             return pedido;
-        } else {
-            throw new IllegalArgumentException("Pedido no encontrado con ID: " + idPedido);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error al buscar el pedido: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al buscar el pedido: " + e.getMessage());
         }
     }
 
     public void addPedido(Pedido pedido) {
-        pedidos.put(pedido.getIdPedido(), pedido);
+        try {
+            if (pedido == null) {
+                throw new IllegalArgumentException("El pedido no puede ser nulo.");
+            }
+            pedidos.put(pedido.getIdPedido(), pedido);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error al agregar el pedido: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error inesperado al agregar el pedido: " + e.getMessage());
+        }
     }
 }
